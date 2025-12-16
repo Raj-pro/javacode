@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  DEPLOY_ENV: production
+  DEPLOY_ENV: production 
 
 jobs:
   build:
