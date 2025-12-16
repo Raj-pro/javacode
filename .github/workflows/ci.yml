@@ -16,5 +16,5 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Print workflow env
-        run: echo "Deploy Environment is $DEPLOY_ENV"
+      - name: Print environment variable
+        run: echo "Deploying to $DEPLOY_ENV"
