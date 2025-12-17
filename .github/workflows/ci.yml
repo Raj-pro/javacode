@@ -1,14 +1,26 @@
-name: Java CI for javacode
+name: Test with PostgreSQL (Java)
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd="pg_isready -U testuser"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -20,14 +32,15 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('Javarepo1/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - name: Wait for PostgreSQL
+        run: |
+          echo "Waiting for PostgreSQL to be ready..."
+          sleep 10
 
-      - name: Build with Maven
+      - name: Run Maven Tests
         working-directory: Javarepo1
-        run: mvn clean package
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/testdb
+          SPRING_DATASOURCE_USERNAME: testuser
+          SPRING_DATASOURCE_PASSWORD: testpass
+        run: mvn test
