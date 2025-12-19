@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print Environment
-        run: echo "Environment: ${{ inputs.environment }}"
-      
+        run: |
+          echo "Environment: ${{ inputs.environment }}"
       - name: Conditional Test Step
         if: ${{ inputs.run-tests == 'true' }}
         run: echo "Running tests as requested!"
