@@ -1,16 +1,16 @@
-name: Reusable Workflow
+name: Trigger Reusable Workflow
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       environment:
         description: 'Environment to deploy'
         required: true
+        default: 'dev'
         type: string
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy
-        run: echo "Deploying to ${{ inputs.environment }}"
+  call-reusable:
+    uses: ./.github/workflows/reusable.yml
+    with:
+      environment: ${{ inputs.environment }}
