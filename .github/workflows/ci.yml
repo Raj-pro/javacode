@@ -24,12 +24,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Print environment
+      - name: Print selected environment
         run: echo "Environment selected: ${{ inputs.environment }}"
 
-      - name: Run tests
-        if: ${{ inputs.run_tests == true }}
+      - name: Run tests (conditional)
+        if: ${{ inputs.run_tests }}
         run: echo "Running tests..."
