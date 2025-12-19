@@ -1,26 +1,26 @@
-name: Java CI with Email Notification
+name: Manual Trigger Workflow
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose environment'
+        required: true
+        default: 'dev'
+        type: string
+      run-tests:
+        description: 'Run tests?'
+        required: false
+        default: false
+        type: boolean
+
 jobs:
-  build:
+  manual-trigger:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Print Environment
+        run: echo "Environment: ${{ inputs.environment }}"
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Build and run tests with Maven
-        run: mvn clean test
-        working-directory: Javarepo1
+      - name: Conditional Test Step
+        if: ${{ inputs.run-tests == true }}
+        run: echo "Running tests as requested!"
