@@ -1,26 +1,35 @@
-name: Manual Trigger Workflow
+name: CI Manual Trigger
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Choose environment'
+        description: "Select environment"
         required: true
-        default: 'dev'
-        type: string
-      run-tests:
-        description: 'Run tests?'
+        default: dev
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+      run_tests:
+        description: "Run tests?"
         required: false
         default: false
         type: boolean
 
 jobs:
-  manual-trigger:
+  build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Print Environment
-        run: echo "Environment: ${{ inputs.environment }}"
 
-      - name: Conditional Test Step
-        if: ${{ inputs.run-tests == true }}
-        run: echo "Running tests as requested!"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Print environment
+        run: echo "Environment selected: ${{ inputs.environment }}"
+
+      - name: Run tests
+        if: ${{ inputs.run_tests == true }}
+        run: echo "Running tests..."
