@@ -1,38 +1,26 @@
-name: Reusable Test Workflow (Java)
+name: Manual Trigger Workflow
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      java-version:
+      environment:
+        description: 'Choose environment'
         required: true
+        default: 'dev'
         type: string
-    secrets:
-      GH_TOKEN:
-        required: true
-    outputs:
-      test-status:
-        description: "Result of test execution"
-        value: ${{ jobs.test.outputs.status }}
+      run-tests:
+        description: 'Run tests?'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
-  test:
+  manual-trigger:
     runs-on: ubuntu-latest
-    outputs:
-      status: ${{ steps.result.outputs.status }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ inputs.java-version }}
-          distribution: temurin
-
-      - name: Run Maven Tests
-        working-directory: Javarepo1
-        run: mvn test
-
-      - name: Set test result
-        id: result
-        run: echo "status=success" >> $GITHUB_OUTPUT
+      - name: Print Environment
+        run: echo "Environment: ${{ inputs.environment }}"
+      
+      - name: Conditional Test Step
+        if: inputs.run-tests == true
+        run: echo "Running tests as requested!"
