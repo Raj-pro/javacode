@@ -1,21 +1,27 @@
-name: CI Pipeline
+name: Java CI with Email Notification
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  test:
-    uses: ./.github/workflows/class3-example6-workflow-dispatch.yaml
-    with:
-      java-version: "17"
-    secrets:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-  deploy:
-    needs: test
+  build:
     runs-on: ubuntu-latest
-    if: needs.test.outputs.test-status == 'success'
+
     steps:
-      - name: Deploy application
-        run: echo "Deploying Java application..."
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build and run tests with Maven
+        run: mvn clean test
+        working-directory: Javarepo1
