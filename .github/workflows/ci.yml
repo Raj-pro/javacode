@@ -1,42 +1,26 @@
-name: Manual Trigger Java Workflow
+name: Manual Trigger Workflow
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "Choose environment"
+        description: 'Choose environment'
         required: true
-        default: dev
-        type: choice
-        options:
-          - dev
-          - staging
-          - prod
-
+        default: 'dev'
+        type: string
       run-tests:
-        description: "Run Maven tests?"
+        description: 'Run tests?'
         required: false
-        default: false
+        default: 'false'
         type: boolean
 
 jobs:
-  manual:
+  manual-trigger:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Print Selected Environment
-        run: echo "Environment selected: ${{ inputs.environment }}"
-
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: temurin
-
-      - name: Run Tests (Conditional)
-        if: ${{ inputs.run-tests }}
-        working-directory: Javarepo1
-        run: mvn test
+      - name: Print Environment
+        run: echo "Environment: ${{ inputs.environment }}"
+      
+      - name: Conditional Test Step
+        if: ${{ inputs.run-tests == 'true' }}
+        run: echo "Running tests as requested!"
